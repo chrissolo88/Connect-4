@@ -1,6 +1,6 @@
 let player = 1;
-const player1 = [];
-const player2 = [];
+let player1 = [];
+let player2 = [];
 const player1Color = 'yellow';
 const player2Color = 'red';
 const col1 = [11,12,13,14,15,16];
@@ -17,6 +17,7 @@ const btn4 = document.getElementById('col-4');
 const btn5 = document.getElementById('col-5');
 const btn6 = document.getElementById('col-6');
 const btn7 = document.getElementById('col-7');
+const btnReset = document.getElementById('reset');
 
 createBoard(7,6);
 
@@ -30,36 +31,36 @@ function checkWin(id) {
     if(player === 1) {
         vertArr.forEach((val) => {
             player1.includes(val) ? winCount += 1 : winCount = 0;
-            winCount === 4 ? setTimeout(() => alert("PLAYER 1 WINS!!"),500) : false;
+            winCount === 4 ? setTimeout(() => alert("PLAYER 1 WINS!!"),300) : false;
         });
         horiArr.forEach((val) => {
             player1.includes(val) ? winCount += 1 : winCount = 0;
-            winCount === 4 ? setTimeout(() => alert("PLAYER 1 WINS!!"),500): false;
+            winCount === 4 ? setTimeout(() => alert("PLAYER 1 WINS!!"),300): false;
         });
         diagUpArr.forEach((val) => {
             player1.includes(val) ? winCount += 1 : winCount = 0;
-            winCount === 4 ? setTimeout(() => alert("PLAYER 1 WINS!!"),500): false;
+            winCount === 4 ? setTimeout(() => alert("PLAYER 1 WINS!!"),300): false;
         });
         diagDwArr.forEach((val) => {
             player1.includes(val) ? winCount += 1 : winCount = 0;
-            winCount === 4 ? setTimeout(() => alert("PLAYER 1 WINS!!"),500): false;
+            winCount === 4 ? setTimeout(() => alert("PLAYER 1 WINS!!"),300): false;
         });
     } else {
         vertArr.forEach((val) => {
             player2.includes(val) ? winCount += 1 : winCount = 0;
-            winCount === 4 ? setTimeout(() => alert("PLAYER 2 WINS!!"),500): false;
+            winCount === 4 ? setTimeout(() => alert("PLAYER 2 WINS!!"),300): false;
         });
         horiArr.forEach((val) => {
             player2.includes(val) ? winCount += 1 : winCount = 0;
-            winCount === 4 ? setTimeout(() => alert("PLAYER 2 WINS!!"),500): false;
+            winCount === 4 ? setTimeout(() => alert("PLAYER 2 WINS!!"),300): false;
         });
         diagUpArr.forEach((val) => {
             player2.includes(val) ? winCount += 1 : winCount = 0;
-            winCount === 4 ? setTimeout(() => alert("PLAYER 2 WINS!!"),500): false;
+            winCount === 4 ? setTimeout(() => alert("PLAYER 2 WINS!!"),300): false;
         });
         diagDwArr.forEach((val) => {
             player2.includes(val) ? winCount += 1 : winCount = 0;
-            winCount === 4 ? setTimeout(() => alert("PLAYER 2 WINS!!"),500): false;
+            winCount === 4 ? setTimeout(() => alert("PLAYER 2 WINS!!"),300): false;
         });
     };
 };
@@ -97,6 +98,7 @@ function dropChip(arr) {
                 player === 1 ? chip.classList.add(player1Color):chip.classList.add(player2Color);
                 if (chip2.classList.contains('red') || chip2.classList.contains('yellow')) {
                     player === 1 ? player1.push(val) : player2.push(val);
+                    playMoves();
                     checkWin(val);
                 } else {
                     player === 1 ? chip.classList.remove(player1Color):chip.classList.remove(player2Color);
@@ -109,7 +111,16 @@ function dropChip(arr) {
  
 
 };
-
+const resetGame = () => {
+    const boardDiv = document.querySelector('#board');
+    boardDiv.innerHTML = '';
+    player1 = [];
+    player2 = [];
+    player = 1;
+    playMoves();
+    createBoard(7,6);
+}
+const playMoves = () => document.getElementById('moves').innerText = `Player 1 moves: ${player1.length} || Player 2 moves: ${player2.length}`;
 btn1.addEventListener('click', () => dropChip(col1));
 btn2.addEventListener('click', () => dropChip(col2));
 btn3.addEventListener('click', () => dropChip(col3));
@@ -117,3 +128,4 @@ btn4.addEventListener('click', () => dropChip(col4));
 btn5.addEventListener('click', () => dropChip(col5));
 btn6.addEventListener('click', () => dropChip(col6));
 btn7.addEventListener('click', () => dropChip(col7));
+btnReset.addEventListener('click', () => resetGame());
