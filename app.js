@@ -1,6 +1,7 @@
 let player = 1;
 let player1 = [];
 let player2 = [];
+let connect4 = [];
 const player1Color = 'yellow';
 const player2Color = 'red';
 const col1 = [11,12,13,14,15,16];
@@ -18,51 +19,58 @@ const btn5 = document.getElementById('col-5');
 const btn6 = document.getElementById('col-6');
 const btn7 = document.getElementById('col-7');
 const btnReset = document.getElementById('reset');
+const dropDivs = document.querySelectorAll('.hold');
 
-createBoard(7,6);
-
+window.addEventListener('load', () => {
+    createBoard(7,6);
+    buttonsClick();
+})
+dropDivs.forEach((dropDiv) => {
+    dropDiv.addEventListener('mouseover',() => {
+        player === 1 ? dropDiv.classList.add('drop','chip','yellow'):dropDiv.classList.add('drop','chip','red');
+    })
+    dropDiv.addEventListener('mouseout',() => {
+        player === 1 ? dropDiv.classList.remove('drop','chip','yellow'):dropDiv.classList.remove('drop','chip','red');
+    })
+})
 
 function checkWin(id) {
-    let vertArr = [(id - 3),(id - 2),(id - 1),(id),(id + 1),(id + 2),(id + 3)];
-    let horiArr = [(id - 30),(id - 20),(id - 10),(id),(id + 10),(id + 20),(id + 30)];
-    let diagUpArr = [(id - 27),(id - 18),(id - 9),(id),(id + 9),(id + 18),(id + 27)];
-    let diagDwArr = [(id - 33),(id - 22),(id - 11),(id),(id + 11),(id + 22),(id + 33)];
-    let winCount = 0;
-    if(player === 1) {
-        vertArr.forEach((val) => {
-            player1.includes(val) ? winCount += 1 : winCount = 0;
-            winCount === 4 ? setTimeout(() => alert("PLAYER 1 WINS!!"),300) : false;
+    let winArr =[[(id - 3),(id - 2),(id - 1),(id),(id + 1),(id + 2),(id + 3)],
+        [(id - 30),(id - 20),(id - 10),(id),(id + 10),(id + 20),(id + 30)],
+        [(id - 27),(id - 18),(id - 9),(id),(id + 9),(id + 18),(id + 27)],
+        [(id - 33),(id - 22),(id - 11),(id),(id + 11),(id + 22),(id + 33)]];
+    let winCount = [];
+
+    winArr.forEach((directionArr) => {
+        directionArr.forEach((val) => {
+            if(player === 1) {
+                player1.includes(val) ? winCount.push(val) : winCount = [];
+                if (winCount.length === 4){
+                    connect4 = winCount
+                    setTimeout(() => winAlert(connect4,2),300)
+                }
+            } else {
+                player2.includes(val) ? winCount.push(val) : winCount = [];
+                if (winCount.length === 4){
+                    connect4 = winCount
+                    setTimeout(() => winAlert(connect4,2),300)
+                }
+            }
         });
-        horiArr.forEach((val) => {
-            player1.includes(val) ? winCount += 1 : winCount = 0;
-            winCount === 4 ? setTimeout(() => alert("PLAYER 1 WINS!!"),300): false;
-        });
-        diagUpArr.forEach((val) => {
-            player1.includes(val) ? winCount += 1 : winCount = 0;
-            winCount === 4 ? setTimeout(() => alert("PLAYER 1 WINS!!"),300): false;
-        });
-        diagDwArr.forEach((val) => {
-            player1.includes(val) ? winCount += 1 : winCount = 0;
-            winCount === 4 ? setTimeout(() => alert("PLAYER 1 WINS!!"),300): false;
-        });
-    } else {
-        vertArr.forEach((val) => {
-            player2.includes(val) ? winCount += 1 : winCount = 0;
-            winCount === 4 ? setTimeout(() => alert("PLAYER 2 WINS!!"),300): false;
-        });
-        horiArr.forEach((val) => {
-            player2.includes(val) ? winCount += 1 : winCount = 0;
-            winCount === 4 ? setTimeout(() => alert("PLAYER 2 WINS!!"),300): false;
-        });
-        diagUpArr.forEach((val) => {
-            player2.includes(val) ? winCount += 1 : winCount = 0;
-            winCount === 4 ? setTimeout(() => alert("PLAYER 2 WINS!!"),300): false;
-        });
-        diagDwArr.forEach((val) => {
-            player2.includes(val) ? winCount += 1 : winCount = 0;
-            winCount === 4 ? setTimeout(() => alert("PLAYER 2 WINS!!"),300): false;
-        });
-    };
+        winCount = [];
+    });
+
+};
+
+function winAlert(arr,num) {
+    buttonsOff();
+    alert(`Player ${num} WINS!!!`);
+    arr.forEach((val) => {
+        document.getElementById(`${val}`).parentNode.classList.add('pulse')
+    })
+    dropDivs.forEach((dropDiv) => {
+        dropDiv.classList.remove('red','yellow','chip','drop');
+    })
 };
 
 function createBoard(columns,rows) {
@@ -106,6 +114,9 @@ function dropChip(arr) {
             };
         });
         player === 1 ? player = 2 : player = 1
+        dropDivs.forEach((dropDiv) => {
+            dropDiv.classList.remove('red','yellow','chip','drop');
+        })
     };
 
  
@@ -119,13 +130,38 @@ const resetGame = () => {
     player = 1;
     playMoves();
     createBoard(7,6);
+    buttonsOn();
+    dropDivs.forEach((dropDiv) => {
+        dropDiv.classList.remove('red','yellow','chip','drop');
+    })
 }
 const playMoves = () => document.getElementById('moves').innerText = `Player 1 moves: ${player1.length} || Player 2 moves: ${player2.length}`;
-btn1.addEventListener('click', () => dropChip(col1));
-btn2.addEventListener('click', () => dropChip(col2));
-btn3.addEventListener('click', () => dropChip(col3));
-btn4.addEventListener('click', () => dropChip(col4));
-btn5.addEventListener('click', () => dropChip(col5));
-btn6.addEventListener('click', () => dropChip(col6));
-btn7.addEventListener('click', () => dropChip(col7));
-btnReset.addEventListener('click', () => resetGame());
+
+function buttonsClick() {
+    btn1.addEventListener('click', () => dropChip(col1));
+    btn2.addEventListener('click', () => dropChip(col2));
+    btn3.addEventListener('click', () => dropChip(col3));
+    btn4.addEventListener('click', () => dropChip(col4));
+    btn5.addEventListener('click', () => dropChip(col5));
+    btn6.addEventListener('click', () => dropChip(col6));
+    btn7.addEventListener('click', () => dropChip(col7));
+    btnReset.addEventListener('click', () => resetGame());
+}
+function buttonsOff() {
+    btn1.disabled = true;
+    btn2.disabled = true;
+    btn3.disabled = true;
+    btn4.disabled = true;
+    btn5.disabled = true;
+    btn6.disabled = true;
+    btn7.disabled = true;
+}
+function buttonsOn() {
+    btn1.disabled = false;
+    btn2.disabled = false;
+    btn3.disabled = false;
+    btn4.disabled = false;
+    btn5.disabled = false;
+    btn6.disabled = false;
+    btn7.disabled = false;
+}
